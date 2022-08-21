@@ -30,7 +30,7 @@ const Task = ({ navigation }) => {
         fetchData();
     }, [])
 
-    const storeData = async (data) => {
+    const storeTask = async (data) => {
         await fetch(baseAddress + 'tasks', {
             method: 'POST',
             headers: {
@@ -63,6 +63,23 @@ const Task = ({ navigation }) => {
         .finally(setLoading(false));
     }
 
+    const updateTask = async (id, data) => {
+        await fetch(baseAddress + 'tasks/' + id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => setData(prevTasks => {
+            return prevTasks.map(task => task.id == id ? data : task)
+        }))
+        .catch(error => console.log(error))
+        .finally(setLoading(false));
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Tasks</Text>
@@ -70,10 +87,10 @@ const Task = ({ navigation }) => {
                 <Text>Loading</Text>
             ) : (
                 <View>
-                    { data.map(task => <TaskItem task={task} deleteData={deleteData}></TaskItem>) }
+                    { data.map(task => <TaskItem task={task} deleteData={deleteData} updateTask={updateTask}></TaskItem>) }
                     <Text 
                         style={styles.add}
-                        onPress={() => navigation.navigate('TaskForm', {storeData: storeData})}
+                        onPress={() => navigation.navigate('TaskForm', {storeTask: storeData})}
                     >
                         <Icon name='plus' size={14} />
                         Add new task
