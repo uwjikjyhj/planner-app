@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useAnimatedStyle } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/AntDesign';
 
-const TaskItem = ({ task }) => {
+const TaskItem = ({ task, deleteData }) => {
     return (
         <View style={styles.container}>
             <Text style={task['done'] ? styles.done : styles.todo}>
@@ -10,7 +10,7 @@ const TaskItem = ({ task }) => {
             </Text>
             <Text>
                 <Icon name='edit' size={18} />
-                <Icon name='delete' size={18}/>
+                <Icon name='delete' size={18} onPress={() => deleteData(task['id'])}/>
             </Text> 
         </View>
     );

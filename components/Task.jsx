@@ -47,6 +47,22 @@ const Task = ({ navigation }) => {
         .finally(setLoading(false));
     }
 
+    const deleteData = async (id) => {
+        await fetch(baseAddress + 'tasks/' + id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+        .then(response => response.json())
+        .then(data => setData(prevData => {
+            return prevData.filter(data => data.id != id)
+        }))
+        .catch(error => console.log(error))
+        .finally(setLoading(false));
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Tasks</Text>
@@ -54,7 +70,7 @@ const Task = ({ navigation }) => {
                 <Text>Loading</Text>
             ) : (
                 <View>
-                    { data.map(task => <TaskItem task={task}></TaskItem>) }
+                    { data.map(task => <TaskItem task={task} deleteData={deleteData}></TaskItem>) }
                     <Text 
                         style={styles.add}
                         onPress={() => navigation.navigate('TaskForm', {storeData: storeData})}
